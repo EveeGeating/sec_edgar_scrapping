@@ -1,0 +1,14 @@
+headers = {'User-Agent': "Fgeating@gmail.com"}
+ticker = 'WSM'
+
+# calling edgar function notebook module to run ahead
+%run edgar_functions.ipynb
+!jupyter nbconvert --to script edgar_functions.ipynb
+# File: edgar_functions.py
+import edgar_functions as functions
+
+accn = get_filtered_filings(ticker, ten_k=True, just_accession_numbers=True, headers=headers)
+acc_num = accn.iloc[0].replace('-','')
+soup = BeautifulSoup(get_statement_soup(ticker, accn, "balance sheet", headers=headers,
+    statement_keys_map=statement_keys_map))
+extract_columns_values_and_dates_from_statement(soup)
